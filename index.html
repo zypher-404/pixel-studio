@@ -530,48 +530,6 @@
             font-size: 14px;
         }
         
-        /* News Section */
-        .news-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        
-        .news-item {
-            background: var(--card-bg);
-            padding: 25px 20px;
-            border-radius: 16px;
-            border: 1px solid var(--card-border);
-            transition: all 0.3s;
-        }
-        
-        .news-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(108, 99, 255, 0.2);
-            border-color: var(--primary-light);
-        }
-        
-        .news-date {
-            color: var(--primary);
-            font-size: 14px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .news-content h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: var(--text-color);
-        }
-        
-        .news-content p {
-            color: var(--gray);
-            line-height: 1.5;
-            font-size: 14px;
-        }
-        
         /* How We Work - мобильная версия */
         .how-we-work-content {
             display: flex;
@@ -1029,7 +987,7 @@
             gap: 5px;
         }
         
-        .member-form, .post-form, .service-form {
+        .member-form, .service-form {
             background: var(--card-bg);
             padding: 20px;
             border-radius: 8px;
@@ -1098,7 +1056,7 @@
                 padding: 40px 0;
             }
             
-            .services-list, .news-list {
+            .services-list {
                 grid-template-columns: 1fr;
                 gap: 15px;
             }
@@ -1166,7 +1124,7 @@
                 padding: 25px 15px;
             }
             
-            .service-card, .news-item {
+            .service-card {
                 padding: 20px 15px;
             }
             
@@ -1268,7 +1226,6 @@
                 <ul class="menu-links">
                     <li><a href="#home">Главная</a></li>
                     <li><a href="#services">Услуги</a></li>
-                    <li><a href="#news">Новости</a></li>
                     <li><a href="#team">Команда</a></li>
                     <li><a href="#contact">Контакты</a></li>
                 </ul>
@@ -1296,15 +1253,6 @@
                 <h2 class="section-title fade-in-up">Наши <span>услуги</span></h2>
                 <div class="services-list" id="servicesContainer">
                     <!-- Услуги будут добавляться через админ-панель -->
-                </div>
-            </div>
-        </section>
-
-        <section class="section section-darker" id="news">
-            <div class="container">
-                <h2 class="section-title fade-in-up">Новости <span>студии</span></h2>
-                <div class="news-list" id="newsContainer">
-                    <!-- Новости будут добавляться через админ-панель -->
                 </div>
             </div>
         </section>
@@ -1425,7 +1373,6 @@
                 <div class="admin-tabs">
                     <button class="admin-tab active" data-tab="main">Главная</button>
                     <button class="admin-tab" data-tab="services">Услуги</button>
-                    <button class="admin-tab" data-tab="news">Новости</button>
                     <button class="admin-tab" data-tab="team">Команда</button>
                     <button class="admin-tab" data-tab="contacts">Контакты</button>
                 </div>
@@ -1488,31 +1435,6 @@
                         <div class="dynamic-list" id="servicesList">
                             <h3>Существующие услуги</h3>
                             <!-- Список услуг будет генерироваться здесь -->
-                        </div>
-                    </div>
-                    
-                    <!-- Вкладка Новости -->
-                    <div class="tab-content" id="news-tab">
-                        <div class="post-form">
-                            <h3>Добавить новость</h3>
-                            <div class="form-group">
-                                <label for="newPostTitle">Заголовок новости</label>
-                                <input type="text" id="newPostTitle" class="form-control" placeholder="Введите заголовок">
-                            </div>
-                            <div class="form-group">
-                                <label for="newPostContent">Содержание новости</label>
-                                <textarea id="newPostContent" class="form-control" placeholder="Введите текст новости"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="newPostDate">Дата публикации</label>
-                                <input type="date" id="newPostDate" class="form-control">
-                            </div>
-                            <button class="btn btn-small" id="addPostBtn">Добавить новость</button>
-                        </div>
-                        
-                        <div class="dynamic-list" id="postsList">
-                            <h3>Существующие новости</h3>
-                            <!-- Список новостей будет генерироваться здесь -->
                         </div>
                     </div>
                     
@@ -1594,8 +1516,20 @@
         }
 
         // Загрузка данных при запуске
-        let newsPosts = loadFromLocalStorage('pixel_news', []);
-        let teamMembers = loadFromLocalStorage('pixel_team', []);
+        let teamMembers = loadFromLocalStorage('pixel_team', [
+            {
+                id: 1,
+                name: "Pixel Blatnoy",
+                role: "Владелец",
+                vkLink: "https://vk.com/pixelblatnoy"
+            },
+            {
+                id: 2,
+                name: "Zypher",
+                role: "Со-Владелец",
+                vkLink: "https://vk.com/zypher"
+            }
+        ]);
         let services = loadFromLocalStorage('pixel_services', [
             {
                 id: 1,
@@ -1617,7 +1551,6 @@
 
         // Сохранение данных при изменении
         function saveAllData() {
-            saveToLocalStorage('pixel_news', newsPosts);
             saveToLocalStorage('pixel_team', teamMembers);
             saveToLocalStorage('pixel_services', services);
         }
@@ -1696,7 +1629,6 @@
         const adminSave = document.getElementById('adminSave');
         const adminClose = document.getElementById('adminClose');
         const loginError = document.getElementById('loginError');
-        const addPostBtn = document.getElementById('addPostBtn');
         const addMemberBtn = document.getElementById('addMemberBtn');
         const addServiceBtn = document.getElementById('addServiceBtn');
 
@@ -1721,7 +1653,6 @@
                 loginError.style.display = 'none';
                 document.getElementById('adminPassword').value = '';
                 // Загружаем существующие данные
-                loadPostsList();
                 loadMembersList();
                 loadServicesList();
             } else {
@@ -1791,36 +1722,6 @@
             }
         });
 
-        // Добавление новости
-        addPostBtn.addEventListener('click', function() {
-            const title = document.getElementById('newPostTitle').value;
-            const content = document.getElementById('newPostContent').value;
-            const date = document.getElementById('newPostDate').value || new Date().toISOString().split('T')[0];
-            
-            if (title && content) {
-                const newPost = {
-                    id: Date.now(),
-                    title: title,
-                    content: content,
-                    date: date
-                };
-                
-                newsPosts.push(newPost);
-                saveAllData();
-                loadPostsList();
-                renderNews();
-                
-                // Очищаем форму
-                document.getElementById('newPostTitle').value = '';
-                document.getElementById('newPostContent').value = '';
-                document.getElementById('newPostDate').value = '';
-                
-                alert('Новость успешно добавлена!');
-            } else {
-                alert('Заполните заголовок и содержание новости!');
-            }
-        });
-
         // Добавление сотрудника
         addMemberBtn.addEventListener('click', function() {
             const name = document.getElementById('newMemberName').value;
@@ -1882,34 +1783,6 @@
             });
         }
 
-        // Загрузка списка новостей в админ-панели
-        function loadPostsList() {
-            const postsList = document.getElementById('postsList');
-            postsList.innerHTML = '<h3>Существующие новости</h3>';
-            
-            if (newsPosts.length === 0) {
-                postsList.innerHTML += '<p>Новостей пока нет</p>';
-                return;
-            }
-            
-            newsPosts.forEach((post, index) => {
-                const postElement = document.createElement('div');
-                postElement.className = 'list-item';
-                postElement.innerHTML = `
-                    <div class="list-item-header">
-                        <strong>${post.title}</strong>
-                        <div class="list-item-actions">
-                            <button class="btn btn-small btn-secondary" onclick="editPost(${index})">Редактировать</button>
-                            <button class="btn btn-small btn-accent" onclick="deletePost(${index})">Удалить</button>
-                        </div>
-                    </div>
-                    <p>${post.content.substring(0, 100)}...</p>
-                    <small>Дата: ${post.date}</small>
-                `;
-                postsList.appendChild(postElement);
-            });
-        }
-
         // Загрузка списка сотрудников в админ-панели
         function loadMembersList() {
             const membersList = document.getElementById('membersList');
@@ -1948,16 +1821,6 @@
             }
         }
 
-        // Удаление новости
-        function deletePost(index) {
-            if (confirm('Вы уверены, что хотите удалить эту новость?')) {
-                newsPosts.splice(index, 1);
-                saveAllData();
-                loadPostsList();
-                renderNews();
-            }
-        }
-
         // Удаление сотрудника
         function deleteMember(index) {
             if (confirm('Вы уверены, что хотите удалить этого сотрудника?')) {
@@ -1981,19 +1844,6 @@
             services.splice(index, 1);
             saveAllData();
             loadServicesList();
-        }
-
-        // Редактирование новости (заглушка)
-        function editPost(index) {
-            const post = newsPosts[index];
-            document.getElementById('newPostTitle').value = post.title;
-            document.getElementById('newPostContent').value = post.content;
-            document.getElementById('newPostDate').value = post.date;
-            
-            // Удаляем старую запись
-            newsPosts.splice(index, 1);
-            saveAllData();
-            loadPostsList();
         }
 
         // Редактирование сотрудника (заглушка)
@@ -2034,36 +1884,6 @@
                     <a href="${service.link}" class="btn">${service.buttonText}</a>
                 `;
                 servicesContainer.appendChild(serviceItem);
-            });
-        }
-
-        // Отображение новостей на сайте
-        function renderNews() {
-            const newsContainer = document.getElementById('newsContainer');
-            newsContainer.innerHTML = '';
-            
-            if (newsPosts.length === 0) {
-                newsContainer.innerHTML = '<p class="text-center">Скоро здесь появятся новости нашей студии</p>';
-                return;
-            }
-            
-            // Сортируем новости по дате (новые сначала)
-            const sortedPosts = [...newsPosts].sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            sortedPosts.forEach(post => {
-                const newsItem = document.createElement('div');
-                newsItem.className = 'news-item fade-in-up';
-                newsItem.innerHTML = `
-                    <div class="news-date">
-                        <i class="far fa-calendar"></i>
-                        ${new Date(post.date).toLocaleDateString('ru-RU')}
-                    </div>
-                    <div class="news-content">
-                        <h3>${post.title}</h3>
-                        <p>${post.content}</p>
-                    </div>
-                `;
-                newsContainer.appendChild(newsItem);
             });
         }
 
@@ -2151,9 +1971,8 @@
             };
             saveToLocalStorage('pixel_settings', settings);
             
-            // Обновляем отображение услуг, новостей и команды
+            // Обновляем отображение услуг и команды
             renderServices();
-            renderNews();
             renderTeam();
             
             // Закрытие админ-панели
@@ -2270,9 +2089,8 @@
             initThemeSwitcher();
             loadSettings();
             
-            // Инициализируем отображение услуг, новостей и команды
+            // Инициализируем отображение услуг и команды
             renderServices();
-            renderNews();
             renderTeam();
             
             // Задержка для улучшения производительности на мобильных
