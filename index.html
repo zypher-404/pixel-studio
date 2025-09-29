@@ -1583,10 +1583,20 @@
         // Сложный пароль для админ-панели
         const ADMIN_PASSWORD = "PIXEL2025!Admin";
 
-        // Данные для хранения
-        let newsPosts = [];
-        let teamMembers = [];
-        let services = [
+        // Функции для работы с localStorage
+        function saveToLocalStorage(key, data) {
+            localStorage.setItem(key, JSON.stringify(data));
+        }
+
+        function loadFromLocalStorage(key, defaultValue = []) {
+            const data = localStorage.getItem(key);
+            return data ? JSON.parse(data) : defaultValue;
+        }
+
+        // Загрузка данных при запуске
+        let newsPosts = loadFromLocalStorage('pixel_news', []);
+        let teamMembers = loadFromLocalStorage('pixel_team', []);
+        let services = loadFromLocalStorage('pixel_services', [
             {
                 id: 1,
                 title: "Разработка сайтов",
@@ -1603,7 +1613,14 @@
                 link: "https://vk.com/pixelblatnoycom",
                 buttonText: "Заказать"
             }
-        ];
+        ]);
+
+        // Сохранение данных при изменении
+        function saveAllData() {
+            saveToLocalStorage('pixel_news', newsPosts);
+            saveToLocalStorage('pixel_team', teamMembers);
+            saveToLocalStorage('pixel_services', services);
+        }
 
         // Создание плавающих иконок
         function createFloatingIcons() {
@@ -1628,7 +1645,7 @@
         // Переключение темы
         function initThemeSwitcher() {
             const themeButtons = document.querySelectorAll('.theme-btn');
-            const currentTheme = localStorage.getItem('theme') || 'dark';
+            const currentTheme = localStorage.getItem('pixel_theme') || 'dark';
             
             // Устанавливаем текущую тему
             document.body.setAttribute('data-theme', currentTheme);
@@ -1644,7 +1661,7 @@
                 btn.addEventListener('click', function() {
                     const theme = this.getAttribute('data-theme');
                     document.body.setAttribute('data-theme', theme);
-                    localStorage.setItem('theme', theme);
+                    localStorage.setItem('pixel_theme', theme);
                     
                     themeButtons.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
@@ -1758,6 +1775,7 @@
                 };
                 
                 services.push(newService);
+                saveAllData();
                 loadServicesList();
                 renderServices();
                 
@@ -1788,6 +1806,7 @@
                 };
                 
                 newsPosts.push(newPost);
+                saveAllData();
                 loadPostsList();
                 renderNews();
                 
@@ -1819,6 +1838,7 @@
                 };
                 
                 teamMembers.push(newMember);
+                saveAllData();
                 loadMembersList();
                 renderTeam();
                 
@@ -1922,6 +1942,7 @@
         function deleteService(index) {
             if (confirm('Вы уверены, что хотите удалить эту услугу?')) {
                 services.splice(index, 1);
+                saveAllData();
                 loadServicesList();
                 renderServices();
             }
@@ -1931,6 +1952,7 @@
         function deletePost(index) {
             if (confirm('Вы уверены, что хотите удалить эту новость?')) {
                 newsPosts.splice(index, 1);
+                saveAllData();
                 loadPostsList();
                 renderNews();
             }
@@ -1940,6 +1962,7 @@
         function deleteMember(index) {
             if (confirm('Вы уверены, что хотите удалить этого сотрудника?')) {
                 teamMembers.splice(index, 1);
+                saveAllData();
                 loadMembersList();
                 renderTeam();
             }
@@ -1956,6 +1979,7 @@
             
             // Удаляем старую запись
             services.splice(index, 1);
+            saveAllData();
             loadServicesList();
         }
 
@@ -1968,6 +1992,7 @@
             
             // Удаляем старую запись
             newsPosts.splice(index, 1);
+            saveAllData();
             loadPostsList();
         }
 
@@ -1981,6 +2006,7 @@
             
             // Удаляем старую запись
             teamMembers.splice(index, 1);
+            saveAllData();
             loadMembersList();
         }
 
@@ -2113,6 +2139,18 @@
             document.getElementById('contactTitle').textContent = contactTitle;
             document.getElementById('contactDesc').textContent = contactDesc;
             
+            // Сохраняем настройки в localStorage
+            const settings = {
+                heroTitle,
+                heroDesc,
+                orderLink,
+                vkLink,
+                tgLink,
+                contactTitle,
+                contactDesc
+            };
+            saveToLocalStorage('pixel_settings', settings);
+            
             // Обновляем отображение услуг, новостей и команды
             renderServices();
             renderNews();
@@ -2124,6 +2162,40 @@
             // Сообщение об успешном сохранении
             alert('Все изменения успешно сохранены!');
         });
+
+        // Загрузка настроек сайта
+        function loadSettings() {
+            const settings = loadFromLocalStorage('pixel_settings', {
+                heroTitle: "Создаём цифровые решения для вашего успеха",
+                heroDesc: "PIXEL.COM - это команда профессионалов, специализирующихся на создании сайтов, форумов, дизайне и разработке онлайн-проектов. Мы превращаем ваши идеи в эффективные цифровые продукты.",
+                orderLink: "https://vk.com/pixelblatnoycom",
+                vkLink: "https://vk.com/pixelblatnoycom",
+                tgLink: "https://t.me/pixelblatnoycom",
+                contactTitle: "Напишите нам в ВКонтакте",
+                contactDesc: "Для заказа проекта или получения консультации, напишите нам в сообщения группы ВКонтакте. Мы ответим в течение 24 часов."
+            });
+            
+            // Применяем настройки
+            document.getElementById('heroTitle').textContent = settings.heroTitle;
+            document.getElementById('heroDesc').textContent = settings.heroDesc;
+            document.getElementById('orderLink').href = settings.orderLink;
+            document.getElementById('vkLink').href = settings.vkLink;
+            document.getElementById('tgLink').href = settings.tgLink;
+            document.getElementById('footerVk').href = settings.vkLink;
+            document.getElementById('footerTg').href = settings.tgLink;
+            document.getElementById('contactLink').href = settings.vkLink;
+            document.getElementById('contactTitle').textContent = settings.contactTitle;
+            document.getElementById('contactDesc').textContent = settings.contactDesc;
+            
+            // Заполняем форму в админ-панели
+            document.getElementById('adminHeroTitle').value = settings.heroTitle;
+            document.getElementById('adminHeroDesc').value = settings.heroDesc;
+            document.getElementById('adminOrderLink').value = settings.orderLink;
+            document.getElementById('adminVkLink').value = settings.vkLink;
+            document.getElementById('adminTgLink').value = settings.tgLink;
+            document.getElementById('adminContactTitle').value = settings.contactTitle;
+            document.getElementById('adminContactDesc').value = settings.contactDesc;
+        }
 
         // Welcome modal functionality
         document.getElementById('closeWelcomeBtn').addEventListener('click', function() {
@@ -2196,6 +2268,7 @@
             createFloatingIcons();
             optimizeForMobile();
             initThemeSwitcher();
+            loadSettings();
             
             // Инициализируем отображение услуг, новостей и команды
             renderServices();
